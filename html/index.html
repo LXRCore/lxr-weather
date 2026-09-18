@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<!-- LXR-WEATHER | LXR UI Kit | © 2026 iBoss21 / LXRCore | lxrcore.com -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Almanac</title>
+  <link rel="stylesheet" href="lxr-ui.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="lxr">
+  <div id="card" class="al-card lxr-hidden">
+    <div class="al-head"><img class="al-logo" src="img/lxrcore-logo.png" alt=""><span class="lxr-mono lxr-t-ash" data-l="almanac"></span><span class="lxr-grow"></span><span class="lxr-mono lxr-t-smoke" id="season"></span></div>
+    <div class="al-time"><span class="lxr-cut al-clock" id="clock"></span><span class="al-date lxr-mono" id="date"></span></div>
+    <div class="al-rows">
+      <div class="lxr-row"><span class="lxr-row-body"><span class="lxr-row-name" id="sky"></span><span class="lxr-row-sub lxr-mono" data-l="sky_now"></span></span><span class="lxr-grow"></span><span class="al-wind lxr-mono" id="wind"></span></div>
+      <div class="lxr-row"><span class="lxr-row-body"><span class="lxr-row-name" id="next"></span><span class="lxr-row-sub lxr-mono" id="when"></span></span><span class="lxr-grow"></span><span class="al-wind lxr-mono" data-l="forecast"></span></div>
+      <div class="lxr-row"><span class="lxr-row-body"><span class="lxr-row-name" id="light"></span><span class="lxr-row-sub lxr-mono" data-l="daylight"></span></span></div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

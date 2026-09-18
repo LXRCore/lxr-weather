@@ -1,298 +1,106 @@
 --[[
-    ██╗     ██╗  ██╗██████╗        ██████╗ ██████╗ ██████╗ ███████╗
-    ██║     ╚██╗██╔╝██╔══██╗      ██╔════╝██╔═══██╗██╔══██╗██╔════╝
-    ██║      ╚███╔╝ ██████╔╝█████╗██║     ██║   ██║██████╔╝█████╗  
-    ██║      ██╔██╗ ██╔══██╗╚════╝██║     ██║   ██║██╔══██╗██╔══╝  
-    ███████╗██╔╝ ██╗██║  ██║      ╚██████╗╚██████╔╝██║  ██║███████╗
-    ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝       ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝
+    ██╗     ██╗  ██╗██████╗       ██╗    ██╗███████╗ █████╗ ████████╗██╗  ██╗███████╗██████╗
+    ██║     ╚██╗██╔╝██╔══██╗      ██║    ██║██╔════╝██╔══██╗╚══██╔══╝██║  ██║██╔════╝██╔══██╗
+    ██║      ╚███╔╝ ██████╔╝█████╗██║ █╗ ██║█████╗  ███████║   ██║   ███████║█████╗  ██████╔╝
+    ██║      ██╔██╗ ██╔══██╗╚════╝██║███╗██║██╔══╝  ██╔══██║   ██║   ██╔══██║██╔══╝  ██╔══██╗
+    ███████╗██╔╝ ██╗██║  ██║      ╚███╔███╔╝███████╗██║  ██║   ██║   ██║  ██║███████╗██║  ██║
+    ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝       ╚══╝╚══╝ ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
 
-    🐺 LXR Core - Weather Sync System
-    Dynamic weather & time synchronization for RedM servers.
+    LXR Core - Weather
 
-    ═══════════════════════════════════════════════════════════════════════════════
-    SERVER INFORMATION
-    ═══════════════════════════════════════════════════════════════════════════════
+    One clock and one sky for everybody. The server keeps the calendar
+    (year, month, day, hour, minute) and the weather (what it is, what comes
+    next, when), publishes them through global state, and every client
+    mirrors them into the game. Seasons come from the calendar; the sky
+    follows a seasonal table with real transitions. Staff can set, freeze
+    and forecast.
 
-    Server:      The Land of Wolves 🐺
-    Tagline:     Georgian RP 🇬🇪 | მგლების მიწა - რჩეულთა ადგილი!
-    Description: ისტორია ცოცხლდება აქ! (History Lives Here!)
-    Type:        Serious Hardcore Roleplay
-    Access:      Discord & Whitelisted
+    Brand:       LXRCore — Lux Empire eXperience RedM Core
+    Product:     wolves.land / The Land of Wolves
+    Developer:   iBoss21 / LXRCore
+    Website:     https://www.lxrcore.com
+    Discord:     https://discord.gg/ZHMKVYyhBa (development)
+    GitHub:      https://github.com/LXRCore
 
-    Developer:   iBoss21 / The Lux Empire
-    Website:     https://www.wolves.land
-    Discord:     https://discord.gg/CrKcWdfd3A
-    GitHub:      https://github.com/iBoss21
-    Store:       https://theluxempire.tebex.io
-    Server:      https://servers.redm.net/servers/detail/8gj7eb
+    Version: 3.0.0
+    Performance Target: 0.00 ms idle (state bag handlers; one server tick per game minute)
 
-    ═══════════════════════════════════════════════════════════════════════════════
-
-    Version: 2.0.0
-    Performance Target: Optimized for minimal server overhead and client FPS impact
-
-    Tags: RedM, Georgian, SeriousRP, Whitelist, WeatherSync, Environment
-
-    Framework Support:
-    - LXR Core (Primary)
-    - RSG Core (Compatible)
-    - VORP Core (Compatible)
-    - RedEM:RP (Compatible)
-    - QBR Core (Compatible)
-    - QR Core (Compatible)
-    - Standalone (Compatible)
-
-    ═══════════════════════════════════════════════════════════════════════════════
-    CREDITS
-    ═══════════════════════════════════════════════════════════════════════════════
-
-    Script Author: iBoss21 / The Lux Empire for The Land of Wolves
-
-    © 2026 iBoss21 / The Lux Empire | wolves.land | All Rights Reserved
+    © 2026 iBoss21 / LXRCore | lxrcore.com | All Rights Reserved
 ]]
 
--- ═══════════════════════════════════════════════════════════════════════════════
--- 🐺 RESOURCE NAME PROTECTION - RUNTIME CHECK
--- ═══════════════════════════════════════════════════════════════════════════════
-
-local REQUIRED_RESOURCE_NAME = "lxr-weathersync"
-local currentResourceName = GetCurrentResourceName()
-
-if currentResourceName ~= REQUIRED_RESOURCE_NAME then
-    error(string.format([[
-
-        ═══════════════════════════════════════════════════════════════════════════════
-        ❌ CRITICAL ERROR: RESOURCE NAME MISMATCH ❌
-        ═══════════════════════════════════════════════════════════════════════════════
-
-        Expected: %s
-        Got: %s
-
-        This resource is branded and must maintain the correct name.
-        Rename the folder to "%s" to continue.
-
-        🐺 wolves.land - The Land of Wolves
-
-        ═══════════════════════════════════════════════════════════════════════════════
-
-    ]], REQUIRED_RESOURCE_NAME, currentResourceName, REQUIRED_RESOURCE_NAME))
-end
-
-Config = {}
+Config = Config or {}
 
 -- ████████████████████████████████████████████████████████████████████████████████
--- ████████████████████████ SERVER BRANDING & INFO ████████████████████████████████
+-- ████████████████████████ LANGUAGE ██████████████████████████████████████████████
 -- ████████████████████████████████████████████████████████████████████████████████
+Config.Lang = 'en'
 
-Config.ServerInfo = {
-    name        = 'The Land of Wolves 🐺',
-    tagline     = 'Georgian RP 🇬🇪 | მგლების მიწა - რჩეულთა ადგილი!',
-    description = 'ისტორია ცოცხლდება აქ!', -- History Lives Here!
-    type        = 'Serious Hardcore Roleplay',
-    access      = 'Discord & Whitelisted',
+-- ████████████████████████████████████████████████████████████████████████████████
+-- ████████████████████████ THE CLOCK ═════════════════════════════════════════════
+-- ████████████████████████████████████████████████████████████████████████████████
+Config.Clock = {
+    msPerMinute = 2000,          -- 2 s per game minute → a 48-minute day
+    nightMsPerMinute = 1000,     -- faster nights (22:00–05:00); nil = same as the day
+    start = { year = 1899, month = 5, day = 12, hour = 8, minute = 0 },
+    persist = true,              -- the calendar survives restarts (lxr_weather table)
+    freeze = false,
+    transitionMs = 1500,         -- how long the client eases into a corrected time
+}
 
-    -- Contact & Links
-    website       = 'https://www.wolves.land',
-    discord       = 'https://discord.gg/CrKcWdfd3A',
-    github        = 'https://github.com/iBoss21',
-    store         = 'https://theluxempire.tebex.io',
-    serverListing = 'https://servers.redm.net/servers/detail/8gj7eb',
+-- game months, the season they belong to, and daylight hours (dawn, dusk)
+Config.Calendar = {
+    { name = 'January',   season = 'winter', dawn = 7.5, dusk = 17.0 },
+    { name = 'February',  season = 'winter', dawn = 7.0, dusk = 17.5 },
+    { name = 'March',     season = 'spring', dawn = 6.5, dusk = 18.0 },
+    { name = 'April',     season = 'spring', dawn = 6.0, dusk = 18.5 },
+    { name = 'May',       season = 'spring', dawn = 5.5, dusk = 19.0 },
+    { name = 'June',      season = 'summer', dawn = 5.0, dusk = 19.5 },
+    { name = 'July',      season = 'summer', dawn = 5.0, dusk = 19.5 },
+    { name = 'August',    season = 'summer', dawn = 5.5, dusk = 19.0 },
+    { name = 'September', season = 'autumn', dawn = 6.0, dusk = 18.5 },
+    { name = 'October',   season = 'autumn', dawn = 6.5, dusk = 18.0 },
+    { name = 'November',  season = 'autumn', dawn = 7.0, dusk = 17.5 },
+    { name = 'December',  season = 'winter', dawn = 7.5, dusk = 17.0 },
+}
+Config.DaysPerMonth = 30
 
-    -- Developer Info
-    developer = 'iBoss21 / The Lux Empire',
-
-    -- Tags
-    tags = {'RedM', 'Georgian', 'SeriousRP', 'Whitelist', 'WeatherSync', 'Environment'}
+-- ████████████████████████████████████████████████████████████████████████████████
+-- ████████████████████████ THE SKY ═══════════════════════════════════════════════
+-- ████████████████████████████████████████████████████████████████████████████████
+-- Weather types are the game's. Each season lists what may come with a weight; `after`
+-- narrows what may follow a given type so a thunderstorm clears through rain, not to snow.
+Config.Weather = {
+    enabled = true,
+    holdMinutes = { min = 45, max = 120 },   -- game minutes a sky lasts before the next roll
+    transitionSeconds = 30,                  -- real seconds the client blends between skies
+    freeze = false,
+    seasons = {
+        spring = { SUNNY = 30, CLOUDS = 25, OVERCAST = 15, MISTY = 8, DRIZZLE = 8, RAIN = 8, SHOWER = 4, THUNDERSTORM = 2 },
+        summer = { SUNNY = 45, HIGHPRESSURE = 15, CLOUDS = 20, OVERCAST = 6, DRIZZLE = 3, RAIN = 4, THUNDERSTORM = 5, SANDSTORM = 2 },
+        autumn = { SUNNY = 25, CLOUDS = 25, OVERCAST = 18, MISTY = 10, FOG = 8, RAIN = 8, DRIZZLE = 4, THUNDERSTORM = 2 },
+        winter = { SUNNY = 20, CLOUDS = 20, OVERCAST = 20, FOG = 8, SNOWLIGHT = 12, SNOW = 10, SLEET = 5, BLIZZARD = 3, WHITEOUT = 2 },
+    },
+    after = {
+        THUNDERSTORM = { 'RAIN', 'SHOWER', 'OVERCAST' }, THUNDER = { 'RAIN', 'OVERCAST' }, BLIZZARD = { 'SNOW', 'SNOWLIGHT', 'OVERCAST' }, WHITEOUT = { 'BLIZZARD', 'SNOW' },
+        RAIN = { 'DRIZZLE', 'OVERCAST', 'CLOUDS', 'MISTY' }, SNOW = { 'SNOWLIGHT', 'OVERCAST', 'CLOUDS' }, FOG = { 'MISTY', 'CLOUDS', 'SUNNY' }, SANDSTORM = { 'HIGHPRESSURE', 'SUNNY' },
+    },
+    wind = { SUNNY = 0.1, HIGHPRESSURE = 0.05, CLOUDS = 0.25, OVERCAST = 0.35, MISTY = 0.1, FOG = 0.05, DRIZZLE = 0.3, RAIN = 0.5, SHOWER = 0.6, THUNDERSTORM = 1.0, THUNDER = 0.9, SLEET = 0.6, SNOWLIGHT = 0.3, SNOW = 0.5, BLIZZARD = 1.0, WHITEOUT = 1.0, SANDSTORM = 1.0, HAIL = 0.7, GROUNDBLIZZARD = 0.9, SNOWCLEARING = 0.2, OVERCASTDARK = 0.4 },
+    snow = { SNOWLIGHT = 0.4, SNOW = 0.8, BLIZZARD = 1.0, WHITEOUT = 1.0, GROUNDBLIZZARD = 1.0, SNOWCLEARING = 0.6, SLEET = 0.2 },
+    -- regions that never see snow (the desert): position-based swap on the client
+    noSnowBelowY = -2400.0, noSnowSwap = { SNOWLIGHT = 'CLOUDS', SNOW = 'OVERCAST', BLIZZARD = 'SANDSTORM', WHITEOUT = 'SANDSTORM', SLEET = 'RAIN', GROUNDBLIZZARD = 'OVERCAST' },
 }
 
 -- ████████████████████████████████████████████████████████████████████████████████
--- ████████████████████████ FRAMEWORK CONFIGURATION ███████████████████████████████
+-- ████████████████████████ ALMANAC (NUI) ═════════════════════════════════════════
 -- ████████████████████████████████████████████████████████████████████████████████
-
---[[
-    Framework Priority (in order):
-    1. LXR-Core  (Primary)
-    2. RSG-Core  (Primary)
-    3. VORP Core (Supported)
-    4. RedEM:RP  (Optional - if detected)
-    5. QBR-Core  (Optional - if detected)
-    6. QR-Core   (Optional - if detected)
-    7. Standalone (Fallback)
-]]
-
-Config.Framework = 'auto' -- 'auto' or manual: 'lxr-core', 'rsg-core', 'vorp_core', 'redem_roleplay', 'qbr-core', 'qr-core', 'standalone'
-
--- Framework-specific settings
-Config.FrameworkSettings = {
-    ['lxr-core'] = {
-        resource      = 'lxr-core',
-        notifications = 'ox_lib',
-        events = {
-            server   = 'lxr-core:server:%s',
-            client   = 'lxr-core:client:%s',
-            callback = 'lxr-core:callback:%s',
-            notify   = 'LXRCore:Notify',
-            onLoaded = 'LXRCore:Client:OnPlayerLoaded'
-        }
-    },
-    ['rsg-core'] = {
-        resource      = 'rsg-core',
-        notifications = 'ox_lib',
-        events = {
-            server   = 'RSGCore:Server:%s',
-            client   = 'RSGCore:Client:%s',
-            callback = 'RSGCore:Callback:%s',
-            notify   = 'RSGCore:Notify',
-            onLoaded = 'RSGCore:Client:OnPlayerLoaded'
-        }
-    },
-    ['vorp_core'] = {
-        resource      = 'vorp_core',
-        notifications = 'vorp',
-        events = {
-            server   = 'vorp:server:%s',
-            client   = 'vorp:client:%s',
-            notify   = 'vorp:TipRight',
-            onLoaded = 'vorpcharacter:Client:CharacterSelected'
-        }
-    },
-    ['redem_roleplay'] = {
-        resource      = 'redem_roleplay',
-        notifications = 'redem',
-        events = {
-            server   = 'redem:%s:server',
-            client   = 'redem:%s:client',
-            notify   = 'esx:showNotification',
-            onLoaded = 'esx:playerLoaded'
-        }
-    },
-    ['qbr-core'] = {
-        resource      = 'qbr-core',
-        notifications = 'ox_lib',
-        events = {
-            server   = 'QBR:Server:%s',
-            client   = 'QBR:Client:%s',
-            notify   = 'QBR:Notify',
-            onLoaded = 'QBRCore:Client:OnPlayerLoaded'
-        }
-    },
-    ['qr-core'] = {
-        resource      = 'qr-core',
-        notifications = 'ox_lib',
-        events = {
-            server   = 'QR:Server:%s',
-            client   = 'QR:Client:%s',
-            notify   = 'QR:Notify',
-            onLoaded = 'QRCore:Client:OnPlayerLoaded'
-        }
-    },
-    ['standalone'] = {
-        notifications = 'print',
-        events = {
-            notify   = nil,
-            onLoaded = nil
-        }
-    }
-}
+Config.Almanac = { command = 'almanac', key = nil, showSeconds = 6000 }
 
 -- ████████████████████████████████████████████████████████████████████████████████
--- ████████████████████████ WEATHER CONFIGURATION █████████████████████████████████
+-- ████████████████████████ SECURITY ══════════════════════════════════════════════
 -- ████████████████████████████████████████████████████████████████████████████████
-
-Config.DynamicWeather   = true  -- Set this to false if you don't want the weather to change automatically every 10 minutes.
-
--- On server start
-Config.StartWeather     = 'SUNNY' -- Default weather                       default: 'EXTRASUNNY'
-Config.BaseTime         = 8       -- Time                                   default: 8
-Config.TimeOffset       = 0       -- Time offset                            default: 0
-Config.FreezeTime       = false   -- freeze time                            default: false
-Config.Blackout         = false   -- Set blackout                           default: false
-Config.BlackoutVehicle  = false   -- Set blackout affects vehicles          default: false
-Config.NewWeatherTimer  = 10      -- Time (in minutes) between weather change default: 10
-Config.Disabled         = false   -- Set weather disabled                   default: false
-
-Config.AvailableWeatherTypes = { -- DON'T TOUCH EXCEPT IF YOU KNOW WHAT YOU ARE DOING
-    "BLIZZARD",        --0x27EA2814  --- Snow
-    "CLOUDS",          --0x30FDAF5C
-    "DRIZZLE",         --0x995C7F44
-    "FOG",             --0xD61BDE01
-    "GROUNDBLIZZARD",  --0x7F622122
-    "HAIL",            --0x75A9E268
-    "HIGHPRESSURE",    --0xF5A87B65
-    "HURRICANE",       --0x320D0951
-    "MISTY",           --0x5974E8E5
-    "OVERCAST",        --0xBB898D2D
-    "OVERCASTDARK",    --0x19D4F1D9
-    "RAIN",            --0x54A69840
-    "SANDSTORM",       --0xB17F6111  --- Sandstorm
-    "SHOWER",          --0xE72679D5  --- Sun and Rain
-    "SLEET",           --0x0CA71D7C
-    "SNOW",            --0xEFB6EFF6
-    "SNOWLIGHT",       --0x23FB812B
-    "SUNNY",           --0x614A1F91
-    "THUNDER",         --0xB677829F
-    "THUNDERSTORM",    --0x7C1C4A13
-    "WHITEOUT",        --0x2B402288
-}
+Config.Security = { adminAce = 'lxrcore.admin', commands = { weather = 'weather', time = 'time', freezetime = 'freezetime', freezeweather = 'freezeweather' } }
 
 -- ████████████████████████████████████████████████████████████████████████████████
--- ████████████████████████ DEBUG SETTINGS ████████████████████████████████████████
+-- ████████████████████████ DEBUG ═════════════════════════════════════════════════
 -- ████████████████████████████████████████████████████████████████████████████████
-
-Config.Debug = false -- Enable debug prints and extra logging
-
--- ████████████████████████████████████████████████████████████████████████████████
--- ████████████████████████ END OF CONFIGURATION ██████████████████████████████████
--- ████████████████████████████████████████████████████████████████████████████████
-
--- Startup banner
-CreateThread(function()
-    Wait(1000)
-    print([[
-
-        ═══════════════════════════════════════════════════════════════════════════════
-
-            ██╗     ██╗  ██╗██████╗        ██████╗ ██████╗ ██████╗ ███████╗
-            ██║     ╚██╗██╔╝██╔══██╗      ██╔════╝██╔═══██╗██╔══██╗██╔════╝
-            ██║      ╚███╔╝ ██████╔╝█████╗██║     ██║   ██║██████╔╝█████╗  
-            ██║      ██╔██╗ ██╔══██╗╚════╝██║     ██║   ██║██╔══██╗██╔══╝  
-            ███████╗██╔╝ ██╗██║  ██║      ╚██████╗╚██████╔╝██║  ██║███████╗
-            ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝       ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝
-
-            ██╗    ██╗███████╗ █████╗ ████████╗██╗  ██╗███████╗██████╗ 
-            ██║    ██║██╔════╝██╔══██╗╚══██╔══╝██║  ██║██╔════╝██╔══██╗
-            ██║ █╗ ██║█████╗  ███████║   ██║   ███████║█████╗  ██████╔╝
-            ██║███╗██║██╔══╝  ██╔══██║   ██║   ██╔══██║██╔══╝  ██╔══██╗
-            ╚███╔███╔╝███████╗██║  ██║   ██║   ██║  ██║███████╗██║  ██║
-             ╚══╝╚══╝ ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
-
-            ███████╗██╗   ██╗███╗   ██╗ ██████╗
-            ██╔════╝╚██╗ ██╔╝████╗  ██║██╔════╝
-            ███████╗ ╚████╔╝ ██╔██╗ ██║██║     
-            ╚════██║  ╚██╔╝  ██║╚██╗██║██║     
-            ███████║   ██║   ██║ ╚████║╚██████╗
-            ╚══════╝   ╚═╝   ╚═╝  ╚═══╝ ╚═════╝
-
-        ═══════════════════════════════════════════════════════════════════════════════
-        🐺 WEATHER SYNC SYSTEM - SUCCESSFULLY LOADED
-        ═══════════════════════════════════════════════════════════════════════════════
-
-        Version:         2.0.0
-        Framework:       Auto-detect enabled
-        Dynamic Weather: ]] .. (Config.DynamicWeather and 'ENABLED ✓' or 'DISABLED ✗') .. [[
-        Start Weather:   ]] .. Config.StartWeather .. [[
-        Weather Timer:   ]] .. Config.NewWeatherTimer .. [[ minutes
-        Blackout:        ]] .. (Config.Blackout and 'ENABLED ✓' or 'DISABLED ✗') .. [[
-        Debug:           ]] .. (Config.Debug and 'ENABLED' or 'DISABLED') .. [[
-
-        ═══════════════════════════════════════════════════════════════════════════════
-
-        Developer:   iBoss21 / The Lux Empire
-        Website:     https://www.wolves.land
-        Discord:     https://discord.gg/CrKcWdfd3A
-        Store:       https://theluxempire.tebex.io
-
-        ═══════════════════════════════════════════════════════════════════════════════
-
-    ]])
-end)
+Config.Debug = { printBanner = true, log = false }

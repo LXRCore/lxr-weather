@@ -1,89 +1,18 @@
---[[
-    ██╗     ██╗  ██╗██████╗        ██████╗ ██████╗ ██████╗ ███████╗
-    ██║     ╚██╗██╔╝██╔══██╗      ██╔════╝██╔═══██╗██╔══██╗██╔════╝
-    ██║      ╚███╔╝ ██████╔╝█████╗██║     ██║   ██║██████╔╝█████╗  
-    ██║      ██╔██╗ ██╔══██╗╚════╝██║     ██║   ██║██╔══██╗██╔══╝  
-    ███████╗██╔╝ ██╗██║  ██║      ╚██████╗╚██████╔╝██║  ██║███████╗
-    ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝       ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝
+--[[ ═══════════════════════════════════════════════════════════════════════════
+     LXR-WEATHER — Locale: English (canonical)
+     Developer   : iBoss21 | Brand : LXRCore | https://www.lxrcore.com
+     © 2026 iBoss21 / LXRCore — All Rights Reserved
+     ═══════════════════════════════════════════════════════════════════════════ ]]
 
-    🐺 LXR Core - Weather Sync System | LOCALES (EN)
-
-    ═══════════════════════════════════════════════════════════════════════════════
-    SERVER INFORMATION
-    ═══════════════════════════════════════════════════════════════════════════════
-
-    Server:      The Land of Wolves 🐺
-    Developer:   iBoss21 / The Lux Empire
-    Website:     https://www.wolves.land
-    Discord:     https://discord.gg/CrKcWdfd3A
-    Store:       https://theluxempire.tebex.io
-
-    ═══════════════════════════════════════════════════════════════════════════════
-
-    © 2026 iBoss21 / The Lux Empire | wolves.land | All Rights Reserved
-]]
-
-local Translations = {
-    weather = {
-        now_frozen = 'Weather is now frozen.',
-        now_unfrozen = 'Weather is no longer frozen.',
-        invalid_syntax = 'Invalid syntax, correct syntax is: /weather <weathertype> ',
-        invalid_syntaxc = 'Invalid syntax, use /weather <weatherType> instead!',
-        updated = 'Weather has been updated.',
-        invalid = 'Invalid weather type, valid weather types are: \nEXTRASUNNY CLEAR NEUTRAL SMOG FOGGY OVERCAST CLOUDS CLEARING RAIN THUNDER SNOW BLIZZARD SNOWLIGHT XMAS HALLOWEEN ',
-        invalidc = 'Invalid weather type, valid weather types are: \nEXTRASUNNY CLEAR NEUTRAL SMOG FOGGY OVERCAST CLOUDS CLEARING RAIN THUNDER SNOW BLIZZARD SNOWLIGHT XMAS HALLOWEEN ',
-        willchangeto = 'Weather will change to: %{value}.',
-        accessdenied = 'Access for command /weather denied.',
+Locale.Register('en', {
+    command = { weather = 'Set the sky', time = 'Set the clock', freezetime = 'Freeze / run the clock', freezeweather = 'Freeze / run the sky' },
+    error = { unknown_weather = 'No such sky.', bad_time = 'Hour 0–23, minute 0–59.' },
+    info = { weather_set = 'The sky turns to %{type}.', time_set = 'The clock is set to %{time}.', time_frozen = 'The clock is frozen.', time_running = 'The clock runs.', sky_frozen = 'The sky is frozen.', sky_running = 'The sky runs.' },
+    ui = { almanac = 'Almanac', sky_now = 'the sky', forecast = 'forecast', daylight = 'daylight', wind = 'wind', frozen = 'held', in_minutes = 'in %{n} min', night = 'Night', day = 'Day' },
+    season = { spring = 'Spring', summer = 'Summer', autumn = 'Autumn', winter = 'Winter' },
+    month = { january = 'January', february = 'February', march = 'March', april = 'April', may = 'May', june = 'June', july = 'July', august = 'August', september = 'September', october = 'October', november = 'November', december = 'December' },
+    sky = {
+        sunny = 'Clear', highpressure = 'Hot and clear', clouds = 'Clouds', overcast = 'Overcast', overcastdark = 'Dark overcast', misty = 'Mist', fog = 'Fog', drizzle = 'Drizzle', rain = 'Rain', shower = 'Showers',
+        thunderstorm = 'Thunderstorm', thunder = 'Thunder', sleet = 'Sleet', snowlight = 'Light snow', snow = 'Snow', blizzard = 'Blizzard', whiteout = 'Whiteout', groundblizzard = 'Ground blizzard', snowclearing = 'Clearing snow', hail = 'Hail', sandstorm = 'Sandstorm',
     },
-    dynamic_weather = {
-        disabled = 'Dynamic weather changes are now disabled.',
-        enabled = 'Dynamic weather changes are now enabled.',
-    },
-    time = {
-        frozenc = 'Time is now frozen.',
-        unfrozenc = 'Time is no longer frozen.',
-        now_frozen = 'Time is now frozen.',
-        now_unfrozen = 'Time is no longer frozen.',
-        morning = 'Time set to morning.',
-        noon = 'Time set to noon.',
-        evening = 'Time set to evening.',
-        night = 'Time set to night.',
-        change = 'Time has changed to %{value}:%{value2}.',
-        changec = 'Time was changed to: %{value}!',
-        invalid = 'Invalid syntax, correct syntax is: time <hour> <minute> !',
-        invalidc = 'Invalid syntax. Use /time <hour> <minute> instead!',
-        access = 'Access for command /time denied.',
-    },
-    blackout = {
-        enabled = 'Blackout is now enabled.',
-        enabledc = 'Blackout is now enabled.',
-        disabled = 'Blackout is now disabled.',
-        disabledc = 'Blackout is now disabled.',
-    },
-    help = {
-        weathercommand = 'Change the weather.',
-        weathertype = 'weathertype',
-        availableweather = 'Available types: extrasunny, clear, neutral, smog, foggy, overcast, clouds, clearing, rain, thunder, snow, blizzard, snowlight, xmas & halloween',
-        timecommand = 'Change the time.',
-        timehname = 'hours',
-        timemname = 'minutes',
-        timeh = 'A number between 0 - 23',
-        timem = 'A number between 0 - 59',
-        freezecommand = 'Freeze / unfreeze time.',
-        freezeweathercommand = 'Enable/disable dynamic weather changes.',
-        morningcommand = 'Set the time to 09:00',
-        nooncommand = 'Set the time to 12:00',
-        eveningcommand = 'Set the time to 18:00',
-        nightcommand = 'Set the time to 23:00',
-        blackoutcommand = 'Toggle blackout mode.',
-    },
-    error = {
-        not_access = 'You do not have access to that command.',
-        not_allowed = 'You are not allowed to use this command.',
-    }
-}
-
-    Lang = Locale:new({
-        phrases = Translations,
-        warnOnMissing = true
-    })
+})

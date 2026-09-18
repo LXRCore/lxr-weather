@@ -1,0 +1,13 @@
+/* LXR-WEATHER — the almanac card on top of lxr-ui.css. No colours here: every value is a kit token. */
+.al-card { position: fixed; top: 28px; left: 50%; transform: translateX(-50%); width: 420px; background: var(--lxr-panel-solid); border-top: 1px solid var(--lxr-blood-lit); border-radius: var(--lxr-radius); padding: var(--lxr-s3) var(--lxr-s5) var(--lxr-s2); opacity: 1; transition: opacity var(--lxr-mid) var(--lxr-ease); }
+.al-card.lxr-hidden { display: none; }
+.al-head { display: flex; align-items: center; gap: var(--lxr-s2); font-size: var(--lxr-text-micro); padding-bottom: var(--lxr-s2); border-bottom: var(--lxr-hairline) solid var(--lxr-edge); }
+.al-logo { width: 18px; height: 18px; object-fit: contain; opacity: .8; }
+.al-time { display: flex; align-items: baseline; gap: var(--lxr-s4); padding: var(--lxr-s3) 0 var(--lxr-s2); }
+.al-clock { font-size: 40px; color: var(--lxr-bone); line-height: 1; }
+.al-date { font-size: var(--lxr-text-micro); color: var(--lxr-ash); }
+.al-rows .lxr-row { padding: var(--lxr-s2) 0; }
+.al-rows .lxr-row-name { font-size: var(--lxr-text-body); }
+.al-rows .lxr-row-sub { font-size: var(--lxr-text-micro); color: var(--lxr-smoke); text-transform: uppercase; letter-spacing: var(--lxr-track-mono); }
+.al-wind { font-size: var(--lxr-text-micro); color: var(--lxr-smoke); }
+.lxr.lang-ka .al-clock { font-family: var(--lxr-font-ka); }
